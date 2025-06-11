@@ -1,6 +1,6 @@
 Clinical Note Summarizer
 
-A Streamlit application designed to efficiently summarize clinical notes into concise, digestible summaries using the power of Groq's language models. This tool helps healthcare professionals quickly grasp the essence of lengthy medical documentation, improving workflow and information retrieval.
+A Streamlit application designed to efficiently summarize clinical notes into concise, digestible summaries using the power of Groq's llama-3.3-70b-versatile model. This tool helps healthcare professionals quickly grasp the essence of lengthy medical documentation, improving workflow and information retrieval.
 
 ✨ Features
 
