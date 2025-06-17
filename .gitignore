@@ -2,8 +2,6 @@ Scripts
 Lib
 Include
 pyvenv.cfg
-.streamlit
 etc
 share
 keys.env
-summarization_prompt.ipynb
