@@ -1,17 +1,29 @@
 import streamlit as st
 from dotenv import load_dotenv
-from langchain_groq import ChatGroq
+from groq import Groq
 import pandas
 import uuid
 
 #problem statment --> approach --> why this approach --> product
 #Add actual notes in the output, polish UI
-load_dotenv("keys.env")
+CLIENT = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 with open("context.txt",'r') as c:
     context = c.read()
 
-messages = [(context),()]
+messages = [
+    {"role": "system", "content": context},
+    {"role": "user", "content": ""},
+]
+
+def get_summary(message):
+    chat_completion = CLIENT.chat.completions.create(
+        messages = message,
+        model="llama-3.3-70b-versatile",
+
+    )
+
+    return chat_completion.choices[0].message.content
 
 
 def retreive_notes(patient_id, database):
@@ -72,11 +84,6 @@ generate = st.button("Generate Summary")
 
 
 if generate:
-    llm = ChatGroq(
-        model = "llama-3.3-70b-versatile",
-        temperature=temprature,
-        max_tokens=tokens
-    )
     if st.session_state['database'] is not None and patientID:
         patient_note = retreive_notes(patientID,st.session_state['database'])
 
@@ -90,10 +97,11 @@ if generate:
                 st.divider()
                 st.write(patient_note)
             with st.status("Summary"):
-                messages[1] = patient_note
-                summary = llm.invoke(messages)
+                
+                messages[1]["content"] = patient_note
+                summary = get_summary(messages)
                 st.header('Summary')
-                st.write(summary.content)
+                st.write(summary)
     else:
         st.error("please input a name and a clinical database")
 

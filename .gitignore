@@ -5,3 +5,4 @@ pyvenv.cfg
 etc
 share
 keys.env
+.streamlit
