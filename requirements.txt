@@ -2,3 +2,4 @@ streamlit
 groq
 langchain
 langchain-groq
+rouge-score

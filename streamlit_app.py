@@ -4,19 +4,13 @@ from langchain_groq import ChatGroq
 import pandas
 import uuid
 
-
+#problem statment --> approach --> why this approach --> product
 #Add actual notes in the output, polish UI
 load_dotenv("keys.env")
 
 with open("context.txt",'r') as c:
     context = c.read()
 
-models = {
-    "Llama 3":"llama-3.3-70b-versatile",
-    "Distill":"distil-whisper-large-v3-en",
-    "Gemma":"gemma2-9b-it",
-
-}
 messages = [(context),()]
 
 
@@ -60,12 +54,8 @@ if 'database' not in st.session_state:
 
 uploaded_database = st.file_uploader("Please upload the clinical data base ( parquet )",type=['parquet'])
 submit_database = st.button("Upload Databse")
-llm_option = st.selectbox(
-    "Which language model would you like to use?",
-    ("Llama 3", "Distill", "Gemma"),
-)
 
-temprature = st.slider("Desired temprature for the language model", 0.0, 1.5, 0.2)
+temprature = st.slider("Desired temprature for the language model", 0.0, 0.5, 0.1)
 
 tokens = st.slider("Number of tokens used (lower amount = shorter summary but may be less accurate)", 0, 512,256)
 
@@ -83,7 +73,7 @@ generate = st.button("Generate Summary")
 
 if generate:
     llm = ChatGroq(
-        model = models[llm_option],
+        model = "llama-3.3-70b-versatile",
         temperature=temprature,
         max_tokens=tokens
     )
@@ -95,12 +85,13 @@ if generate:
         if not patient_note:
             st.error("The name is not in the database")
         else:
-            with st.status("Creating Patient Summary"):
-                messages[1] = patient_note
-                summary = llm.invoke(messages)
+            with st.status("Patient Clinical Note"):
                 st.header('Patient Note')
                 st.divider()
                 st.write(patient_note)
+            with st.status("Summary"):
+                messages[1] = patient_note
+                summary = llm.invoke(messages)
                 st.header('Summary')
                 st.write(summary.content)
     else:
